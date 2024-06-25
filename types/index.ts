@@ -2,7 +2,7 @@
 export type CreateUserParams = {
   clerkId: string;
   firstName: string;
-  lastName: string;
+  lastName: string | null;
   username: string;
   email: string;
   photo: string;
@@ -10,7 +10,7 @@ export type CreateUserParams = {
 
 export type UpdateUserParams = {
   firstName: string;
-  lastName: string;
+  lastName: string | null;
   username: string;
   photo: string;
 };
@@ -90,7 +90,7 @@ export type Event = {
   organizer: {
     _id: string;
     firstName: string;
-    lastName: string;
+    lastName: string | null;
   };
   category: {
     _id: string;

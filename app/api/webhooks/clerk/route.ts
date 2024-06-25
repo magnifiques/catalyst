@@ -1,15 +1,15 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent, clerkClient } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 import {
   createUser,
   deleteUser,
   updateUser,
 } from "@/lib/mongodb/actions/User.actions";
-import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
+  // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
@@ -54,8 +54,7 @@ export async function POST(req: Request) {
     });
   }
 
-  // Do something with the payload
-  // For this guide, you simply log the payload to the console
+  // Get the ID and type
   const { id } = evt.data;
   const eventType = evt.type;
 
@@ -71,8 +70,8 @@ export async function POST(req: Request) {
       lastName: last_name ?? "",
       photo: image_url,
     };
-
     const newUser = await createUser(user);
+    console.log("api console", newUser);
 
     if (newUser) {
       await clerkClient.users.updateUserMetadata(id, {
@@ -82,7 +81,7 @@ export async function POST(req: Request) {
       });
     }
 
-    return NextResponse.json({ message: "ok", status: 200 });
+    return NextResponse.json({ message: "OK", user: newUser });
   }
 
   if (eventType === "user.updated") {

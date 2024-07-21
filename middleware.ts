@@ -5,7 +5,7 @@ const isProtectedRoutes = createRouteMatcher([
   "/events/:id",
   "/api/webhooks/clerk/",
   "/api/webhooks/stripe/",
-  "/api/uploadthing",
+  "/api/uploadthing/",
 ]);
 
 export default clerkMiddleware((auth, req) => {

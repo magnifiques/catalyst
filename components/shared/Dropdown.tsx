@@ -1,4 +1,4 @@
-import React, { startTransition, useState } from "react";
+import React, { startTransition, useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -20,6 +20,10 @@ import {
 
 import { ICategory } from "@/lib/mongodb/models/Category.Model";
 import { Input } from "../ui/input";
+import {
+  createCategory,
+  getAllCategory,
+} from "@/lib/mongodb/actions/Category.actions";
 
 type DropDownProps = {
   value?: string;
@@ -30,8 +34,20 @@ const Dropdown = ({ value, onChangeHandler }: DropDownProps) => {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [newCategory, setNewCategory] = useState("");
 
-  const handleAddCategory = () => {};
+  const handleAddCategory = () => {
+    createCategory({
+      categoryName: newCategory.trim(),
+    }).then((category) => setCategories((prev) => [...prev, category]));
+  };
 
+  useEffect(() => {
+    const getCategories = async () => {
+      const categoryList = await getAllCategory();
+      categoryList && setCategories(categoryList as ICategory[]);
+    };
+
+    getCategories();
+  }, []);
   return (
     <Select onValueChange={onChangeHandler} defaultValue={value}>
       <SelectTrigger className="select-field">
@@ -50,7 +66,7 @@ const Dropdown = ({ value, onChangeHandler }: DropDownProps) => {
           ))}
         <AlertDialog>
           <AlertDialogTrigger className="p-medium flex w-full rounded-sm py-3 pl-8 text-primary-500 hover:bg-primary-50 focus:text-primary-500">
-            Open
+            Add new Category
           </AlertDialogTrigger>
           <AlertDialogContent className="bg-white">
             <AlertDialogHeader>

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { useUploadThing } from "@/lib/uploadthing";
 import {
   Form,
   FormControl,
@@ -26,6 +27,8 @@ import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
 import { Checkbox } from "../ui/checkbox";
+import { useRouter } from "next/navigation";
+import { createEvent } from "@/lib/mongodb/actions/Event.actions";
 
 type EventFormProps = {
   userId: string;
@@ -34,6 +37,9 @@ type EventFormProps = {
 
 const EventForm = ({ userId, type }: EventFormProps) => {
   const defaultValues = eventDefaultValues;
+  const router = useRouter();
+
+  const { startUpload } = useUploadThing("imageUploader");
   // 1. Define your form.
   const form = useForm<z.infer<typeof authFormSchema>>({
     resolver: zodResolver(authFormSchema),
@@ -41,10 +47,32 @@ const EventForm = ({ userId, type }: EventFormProps) => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof authFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof authFormSchema>) {
+    let uploadedImageUrl = values.imgUrl;
+
+    if (files.length > 0) {
+      const uploadedImages = await startUpload(files);
+
+      if (!uploadedImages) return;
+
+      uploadedImageUrl = uploadedImages[0].url;
+    }
+
+    if (type === "create") {
+      try {
+        const newEvent = await createEvent({
+          event: { ...values, imgUrl: uploadedImageUrl },
+          userId,
+          path: "/profile",
+        });
+        if (newEvent) {
+          form.reset();
+          router.push(`/events/${newEvent._id}`);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }
 
   const [files, setFiles] = useState<File[]>([]);
@@ -110,7 +138,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
         <div className="flex flex-col gap-6 md:flex-row">
           <FormField
             control={form.control}
-            name="description"
+            name="imgUrl"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Upload Image for the event</FormLabel>
@@ -257,6 +285,8 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                                 Free Ticket
                               </label>
                               <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
                                 id="isFree"
                                 className="mr-2 h-5 w-5 border-2 border-primary-500"
                               />

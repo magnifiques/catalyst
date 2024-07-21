@@ -10,9 +10,9 @@ export const authFormSchema = z.object({
     .string()
     .min(3, "Location must be at least 3 characters long")
     .max(400, "Location is too long (max: 400 characters"),
-  imageUrl: z.string(),
+  imgUrl: z.string(),
   startDateTime: z.date(),
-  endDataTime: z.date(),
+  endDateTime: z.date(),
   categoryId: z.string(),
   price: z.string(),
   isFree: z.boolean(),

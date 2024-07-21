@@ -1,10 +1,19 @@
+import Collection from "@/components/shared/Collection";
 import Header from "@/components/shared/Header";
 import { Button } from "@/components/ui/button";
+import { getAllEvents } from "@/lib/mongodb/actions/Event.actions";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const page = () => {
+const page = async () => {
+  const events = await getAllEvents({
+    query: "",
+    category: "",
+    limit: 6,
+    page: 1,
+  });
+
   return (
     <>
       <section className="bg-primary-50 bg-dotted-pattern bg-contain py-5 md:py-10">
@@ -42,6 +51,15 @@ const page = () => {
           {/* SEARCH */}
           {/* Category Filter */}
         </div>
+        <Collection
+          data={events?.data}
+          emptyTitle="No Events Found"
+          emptySubtitle="Come Back Later"
+          collectionType="All_Events"
+          limit={6}
+          page={1}
+          totalPages={2}
+        />
       </section>
     </>
   );

@@ -202,6 +202,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                     </p>
                     <DatePicker
                       selected={field.value}
+                      //@ts-ignore
                       onChange={(date: Date) => field.onChange(date)}
                       showTimeSelect
                       timeInputLabel="Time:"
@@ -233,6 +234,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                     </p>
                     <DatePicker
                       selected={field.value}
+                      //@ts-ignore
                       onChange={(date: Date) => field.onChange(date)}
                       showTimeSelect
                       timeInputLabel="Time:"

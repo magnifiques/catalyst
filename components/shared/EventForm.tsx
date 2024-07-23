@@ -28,15 +28,25 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Checkbox } from "../ui/checkbox";
 import { useRouter } from "next/navigation";
-import { createEvent } from "@/lib/mongodb/actions/Event.actions";
+import { createEvent, updateEvent } from "@/lib/mongodb/actions/Event.actions";
+import { IEvent } from "@/lib/mongodb/models/Event.Model";
 
 type EventFormProps = {
   userId: string;
   type: "create" | "update";
+  event?: IEvent;
+  eventId?: string;
 };
 
-const EventForm = ({ userId, type }: EventFormProps) => {
-  const defaultValues = eventDefaultValues;
+const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
+  const defaultValues =
+    event && type === "update"
+      ? {
+          ...event,
+          startDateTime: new Date(event.startDateTime),
+          endDateTime: new Date(event.endDateTime),
+        }
+      : eventDefaultValues;
   const router = useRouter();
 
   const { startUpload } = useUploadThing("imageUploader");
@@ -68,6 +78,28 @@ const EventForm = ({ userId, type }: EventFormProps) => {
         if (newEvent) {
           form.reset();
           router.push(`/events/${newEvent._id}`);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    if (type === "update") {
+      if (!eventId) {
+        router.back();
+        return;
+      }
+      try {
+        const updatedEvent = await updateEvent({
+          userId,
+          event: { ...values, imgUrl: uploadedImageUrl, _id: eventId },
+          path: `/events/${eventId}`,
+        });
+        console.log(updatedEvent);
+
+        if (updatedEvent) {
+          form.reset();
+          router.push(`/events/${updatedEvent._id}`);
         }
       } catch (error) {
         console.log(error);

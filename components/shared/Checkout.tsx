@@ -1,11 +1,7 @@
 "use client";
-import React, { useCallback } from "react";
+import React, { useEffect } from "react";
 import { Button } from "../ui/button";
 import { IEvent } from "@/lib/mongodb/models/Event.Model";
-import {
-  EmbeddedCheckoutProvider,
-  EmbeddedCheckout,
-} from "@stripe/react-stripe-js";
 
 import { loadStripe } from "@stripe/stripe-js";
 import { checkoutOrder } from "@/lib/mongodb/actions/Order.actions";
@@ -14,16 +10,19 @@ const stripePromise = loadStripe(
 );
 
 const Checkout = ({ event, userId }: { event: IEvent; userId: string }) => {
-  const fetchClientSecret = useCallback(() => {
-    // Create a Checkout Session
-    return fetch("/api/checkout_sessions", {
-      method: "POST",
-    })
-      .then((res) => res.json())
-      .then((data) => data.clientSecret);
-  }, []);
+  useEffect(() => {
+    // Check to see if this is a redirect back from Checkout
+    const query = new URLSearchParams(window.location.search);
+    if (query.get("success")) {
+      console.log("Order placed! You will receive an email confirmation.");
+    }
 
-  const options = { fetchClientSecret };
+    if (query.get("canceled")) {
+      console.log(
+        "Order canceled -- continue to shop around and checkout when you’re ready."
+      );
+    }
+  }, []);
 
   const onCheckout = async () => {
     const order = {
@@ -37,13 +36,11 @@ const Checkout = ({ event, userId }: { event: IEvent; userId: string }) => {
     await checkoutOrder(order);
   };
   return (
-    <EmbeddedCheckoutProvider stripe={stripePromise} options={options}>
-      <form action={onCheckout} method="POST">
-        <Button type="submit" role="link" size="lg" className="button sm:w-fit">
-          {event.isFree ? "Get Tickets" : "Buy Tickets"}
-        </Button>
-      </form>
-    </EmbeddedCheckoutProvider>
+    <form action={onCheckout} method="POST">
+      <Button type="submit" role="link" size="lg" className="button sm:w-fit">
+        {event.isFree ? "Get Tickets" : "Buy Tickets"}
+      </Button>
+    </form>
   );
 };
 

@@ -10,7 +10,6 @@ import React from "react";
 const page = async () => {
   const { sessionClaims } = auth();
   const userId = sessionClaims?.userId as string;
-  console.log(userId);
   const orders = await getOrdersByUser({ userId, page: 1 });
   const orderedEvents = orders?.data.map((order: IOrder) => order.event || []);
 

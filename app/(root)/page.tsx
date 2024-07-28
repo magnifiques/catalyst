@@ -1,19 +1,25 @@
+import CategoryFilter from "@/components/shared/CategoryFilter";
 import Collection from "@/components/shared/Collection";
 import Header from "@/components/shared/Header";
+import Search from "@/components/shared/Search";
 import { Button } from "@/components/ui/button";
 import { getAllEvents } from "@/lib/mongodb/actions/Event.actions";
+import { SearchParamProps } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const page = async () => {
-  const events = await getAllEvents({
-    query: "",
-    category: "",
-    limit: 6,
-    page: 1,
-  });
+const page = async ({ searchParams }: SearchParamProps) => {
+  const searchPage = Number(searchParams?.page) || 1;
+  const searchText = (searchParams?.query as string) || "";
+  const searchCategory = (searchParams?.category as string) || "";
 
+  const events = await getAllEvents({
+    query: searchText,
+    category: searchCategory,
+    limit: 6,
+    page: searchPage,
+  });
   return (
     <>
       <section className="bg-primary-50 bg-dotted-pattern bg-contain py-5 md:py-10">
@@ -48,8 +54,8 @@ const page = async () => {
           Thousands of Events
         </h2>
         <div className="flex w-full flex-col gap-5 md:flex-row">
-          {/* SEARCH */}
-          {/* Category Filter */}
+          <Search />
+          <CategoryFilter />
         </div>
         <Collection
           data={events?.data}
@@ -58,7 +64,7 @@ const page = async () => {
           collectionType="All_Events"
           limit={6}
           page={1}
-          totalPages={2}
+          totalPages={events?.totalPages}
         />
       </section>
     </>

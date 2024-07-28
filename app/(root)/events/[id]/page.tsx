@@ -59,7 +59,7 @@ const page = async ({ params: { id }, searchParams }: SearchParamProps) => {
                   width={32}
                   height={32}
                 />
-                <div className="p-medium-16 lg:p-regular-20 flex flex-wrap items-center">
+                <div className="p-medium-16 lg:p-regular-18 flex flex-col flex-wrap justify-center items-center">
                   <p>
                     {formatDateTime(event.startDateTime).dateOnly} -{"  "}
                     {formatDateTime(event.startDateTime).timeOnly}
@@ -103,9 +103,9 @@ const page = async ({ params: { id }, searchParams }: SearchParamProps) => {
           emptyTitle="No Events Found"
           emptySubtitle="Come Back Later"
           collectionType="All_Events"
-          limit={6}
-          page={1}
-          totalPages={2}
+          limit={3}
+          page={searchParams.page as string}
+          totalPages={relatedEvents?.totalPages}
         />
       </section>
     </>

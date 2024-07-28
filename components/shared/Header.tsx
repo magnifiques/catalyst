@@ -10,13 +10,17 @@ const Header = () => {
   return (
     <header className="w-full border-b">
       <div className="wrapper flex items-center justify-between">
-        <Link href="/" className="w-36 ">
+        <Link
+          href="/"
+          className="w-40 gap-3   flex items-center justify-center"
+        >
           <Image
-            src="/assets/images/logo.svg"
-            width={128}
-            height={38}
+            src="/assets/icons/logo.png"
+            width={40}
+            height={40}
             alt="catalyst"
           />
+          <p className="text-xl font-bold text-yellow-600">Catalyst</p>
         </Link>
 
         <SignedIn>

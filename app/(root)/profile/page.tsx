@@ -3,17 +3,23 @@ import { Button } from "@/components/ui/button";
 import { getEventsByUser } from "@/lib/mongodb/actions/Event.actions";
 import { getOrdersByUser } from "@/lib/mongodb/actions/Order.actions";
 import { IOrder } from "@/lib/mongodb/models/Order.Model";
+import { SearchParamProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 import React from "react";
 
-const page = async () => {
+const page = async ({ searchParams }: SearchParamProps) => {
   const { sessionClaims } = auth();
   const userId = sessionClaims?.userId as string;
-  const orders = await getOrdersByUser({ userId, page: 1 });
+
+  const ordersPage = Number(searchParams?.ordersPage) || 1;
+  const eventsPage = Number(searchParams?.eventsPage) || 1;
+
+  const orders = await getOrdersByUser({ userId, page: ordersPage });
   const orderedEvents = orders?.data.map((order: IOrder) => order.event || []);
 
-  const organizedEvents = await getEventsByUser({ userId, page: 1 });
+  const organizedEvents = await getEventsByUser({ userId, page: eventsPage });
+
   return (
     <>
       {/* My Tickets */}
@@ -33,9 +39,9 @@ const page = async () => {
           emptySubtitle="No worries! - plenty of exciting events to explore"
           collectionType="My_Tickets"
           limit={3}
-          page={1}
+          page={ordersPage}
           urlParamName="ordersPage"
-          totalPages={2}
+          totalPages={orders?.totalPages}
         />
       </section>
 
@@ -57,10 +63,10 @@ const page = async () => {
           emptyTitle="No events have been created yet"
           emptySubtitle="Create events"
           collectionType="Events_Organized"
-          limit={6}
-          page={1}
+          limit={3}
+          page={eventsPage}
           urlParamName="eventsPage"
-          totalPages={2}
+          totalPages={organizedEvents?.totalPages}
         />
       </section>
     </>

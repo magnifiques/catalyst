@@ -6,15 +6,29 @@ const Footer = () => {
   return (
     <footer className="border-t">
       <div className="flex-center wrapper flex-between flex flex-col gap-4 p-5 text-center sm:flex-row">
-        <Link href="/">
+        <Link
+          href="/"
+          className="flex flex-row gap-4 items-center justify-center"
+        >
           <Image
-            src="/assets/images/logo.svg"
+            src="/assets/icons/logo.png"
             alt="logo"
-            width={128}
-            height={38}
+            width={50}
+            height={50}
           />
+          <p className="text-xl font-bold text-yellow-600">Catalyst</p>
         </Link>
-        <p>Catalyst</p>
+
+        <p>
+          Created with 💛, by{" "}
+          <Link
+            href="https://github.com/magnifiques"
+            className="text-purple-600 hover:text-yellow-300"
+            target="__blank"
+          >
+            Magnifiques
+          </Link>
+        </p>
       </div>
     </footer>
   );

@@ -123,7 +123,7 @@ export async function getOrdersByEvent({
 
     return JSON.parse(JSON.stringify(orders));
   } catch (error) {
-    handleError(error);
+    console.log(error);
   }
 }
 

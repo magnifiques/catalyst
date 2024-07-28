@@ -4,7 +4,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="border-t">
+    <footer className="border-t bg-gray-200">
       <div className="flex-center wrapper flex-between flex flex-col gap-4 p-5 text-center sm:flex-row">
         <Link
           href="/"
@@ -16,7 +16,7 @@ const Footer = () => {
             width={50}
             height={50}
           />
-          <p className="text-xl font-bold text-yellow-600">Catalyst</p>
+          <p className="text-xl font-bold text-yellow-500">Catalyst</p>
         </Link>
 
         <p>

@@ -9,8 +9,9 @@ import { SearchParamProps } from "@/types";
 import Image from "next/image";
 import React from "react";
 
-const page = async ({ params: { id }, searchParams }: SearchParamProps) => {
+const page = async ({ searchParams, params: { id } }: SearchParamProps) => {
   const event = await getEventById(id);
+
   const relatedEvents = await getRelatedEventsByCategory({
     categoryId: event.category._id,
     eventId: event._id,
@@ -83,7 +84,7 @@ const page = async ({ params: { id }, searchParams }: SearchParamProps) => {
             </div>
 
             <div className="flex flex-col gap-2">
-              <p className="p-bold-20 text-gray-600">What you'll learn</p>
+              <p className="p-bold-20 text-gray-600">Description</p>
               <p className="p-medium-16 lg:p-regular-18 ">
                 {event.description}
               </p>
@@ -104,8 +105,8 @@ const page = async ({ params: { id }, searchParams }: SearchParamProps) => {
           emptySubtitle="Come Back Later"
           collectionType="All_Events"
           limit={3}
-          page={searchParams.page as string}
-          totalPages={relatedEvents?.totalPages}
+          page={1}
+          totalPages={1}
         />
       </section>
     </>

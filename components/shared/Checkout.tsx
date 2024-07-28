@@ -1,13 +1,11 @@
-"use client";
 import React, { useEffect } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+
 import { Button } from "../ui/button";
 import { IEvent } from "@/lib/mongodb/models/Event.Model";
-
-import { loadStripe } from "@stripe/stripe-js";
 import { checkoutOrder } from "@/lib/mongodb/actions/Order.actions";
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-);
+
+loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 const Checkout = ({ event, userId }: { event: IEvent; userId: string }) => {
   useEffect(() => {
@@ -35,10 +33,11 @@ const Checkout = ({ event, userId }: { event: IEvent; userId: string }) => {
 
     await checkoutOrder(order);
   };
+
   return (
-    <form action={onCheckout} method="POST">
+    <form action={onCheckout} method="post">
       <Button type="submit" role="link" size="lg" className="button sm:w-fit">
-        {event.isFree ? "Get Tickets" : "Buy Tickets"}
+        {event.isFree ? "Get Ticket" : "Buy Ticket"}
       </Button>
     </form>
   );

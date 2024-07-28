@@ -39,6 +39,7 @@ type EventFormProps = {
 };
 
 const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
+  console.log(eventId);
   const defaultValues =
     event && type === "update"
       ? {

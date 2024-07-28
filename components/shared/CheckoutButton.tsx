@@ -1,23 +1,22 @@
 "use client";
-import { IEvent } from "@/lib/mongodb/models/Event.Model";
+
 import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
+import Link from "next/link";
 import React from "react";
 import { Button } from "../ui/button";
-import Link from "next/link";
 import Checkout from "./Checkout";
+import { IEvent } from "@/lib/mongodb/models/Event.Model";
 
 const CheckoutButton = ({ event }: { event: IEvent }) => {
   const { user } = useUser();
-
   const userId = user?.publicMetadata.userId as string;
-  const hasEventEnded = new Date(event.endDateTime) < new Date();
+  const hasEventFinished = new Date(event.endDateTime) < new Date();
 
   return (
     <div className="flex items-center gap-3">
-      {/* Can not buy past events */}
-      {hasEventEnded ? (
+      {hasEventFinished ? (
         <p className="p-2 text-red-400">
-          Sorry! Tickets are no longer available
+          Sorry, tickets are no longer available.
         </p>
       ) : (
         <>
@@ -26,6 +25,7 @@ const CheckoutButton = ({ event }: { event: IEvent }) => {
               <Link href="/sign-in">Get Tickets</Link>
             </Button>
           </SignedOut>
+
           <SignedIn>
             <Checkout event={event} userId={userId} />
           </SignedIn>

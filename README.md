@@ -51,5 +51,5 @@ Catalyst is built using a robust and modern tech stack, ensuring performance, sc
 
 I'm always open to feedback and collaboration. Feel free to reach out if you have any questions or suggestions!
 
-- **LinkedIn**: [Arpit Vaghela](https://www.linkedin.com/in/arpit-vaghela) -
+- **LinkedIn**: [Arpit Vaghela](https://www.linkedin.com/in/arpit-vaghela)
 - **Email**: [arpitvaghela@outlook.com](mailto:arpitvaghela@outlook.com) 

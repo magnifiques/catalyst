@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { formUrlQuery } from "@/lib/utils";
 
@@ -14,19 +14,23 @@ type PaginationProps = {
 const Pagination = ({ page, totalPages, urlParamName }: PaginationProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  console.log(totalPages, Number(page));
+  const [currentPage, setCurrentPage] = useState<number>(1); // Default to 1
 
   const onClick = (btnType: string) => {
-    const pageValue = btnType === "next" ? Number(page) + 1 : Number(page) - 1;
+    const newPage = btnType === "next" ? currentPage + 1 : currentPage - 1;
 
-    const newUrl = formUrlQuery({
-      params: searchParams.toString(),
-      key: urlParamName || "page",
-      value: pageValue.toString(),
-    });
+    // Ensure newPage is within valid range
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
 
-    router.push(newUrl, { scroll: false });
+      const newUrl = formUrlQuery({
+        params: searchParams.toString(),
+        key: urlParamName || "page",
+        value: newPage.toString(),
+      });
+
+      router.push(newUrl, { scroll: false });
+    }
   };
 
   return (
@@ -36,7 +40,7 @@ const Pagination = ({ page, totalPages, urlParamName }: PaginationProps) => {
         variant="outline"
         className="w-28"
         onClick={() => onClick("prev")}
-        // disabled={Number(page) < 1}
+        disabled={currentPage <= 1} // Disable when on the first page
       >
         Previous
       </Button>
@@ -45,7 +49,7 @@ const Pagination = ({ page, totalPages, urlParamName }: PaginationProps) => {
         variant="outline"
         className="w-28"
         onClick={() => onClick("next")}
-        // disabled={Number(page) + 1 === totalPages}
+        disabled={currentPage >= totalPages} // Disable when on the last page
       >
         Next
       </Button>
